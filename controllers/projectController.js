@@ -3,24 +3,38 @@ const Project = require('../models/Project');
 // Get all projects
 const getAllProjects = async (req, res) => {
   try {
-    const { category, limit } = req.query;
+    const { category, limit, page } = req.query;
     const filter = { isActive: true };
     
     if (category && typeof category === 'string' && ['residential', 'commercial'].includes(category.toLowerCase())) {
       filter.category = category.toLowerCase();
     }
 
-    const query = Project.find(filter).sort({ order: 1, createdAt: -1 });
-    const parsedLimit = parseInt(limit, 10);
-    if (!Number.isNaN(parsedLimit) && parsedLimit > 0) {
-      query.limit(parsedLimit);
-    }
+    // Pagination setup
+    const parsedPage = parseInt(page, 10) || 1;
+    const parsedLimit = parseInt(limit, 10) || 20; // Default: 20 projects per page
+    const skip = (parsedPage - 1) * parsedLimit;
 
-    const projects = await query;
+    // Get total count for pagination info
+    const totalCount = await Project.countDocuments(filter);
+
+    // Fetch paginated projects with field selection (exclude large fields for list view)
+    const projects = await Project.find(filter)
+      .select('title category description location completionYear client featuredImage order isActive createdAt')
+      .sort({ order: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(parsedLimit);
+
     res.json({
       success: true,
       data: projects,
-      count: projects.length
+      count: projects.length,
+      pagination: {
+        currentPage: parsedPage,
+        totalPages: Math.ceil(totalCount / parsedLimit),
+        totalRecords: totalCount,
+        limit: parsedLimit
+      }
     });
   } catch (error) {
     res.status(500).json({

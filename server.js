@@ -9,9 +9,13 @@ const cors = require('cors');
 
 const app = express();
 
+// Compression middleware - reduces response size
+const compression = require('compression');
+app.use(compression());
+
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://rkinteriorstudio.in', 'https://www.rkinteriorstudio.in'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true
