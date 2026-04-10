@@ -3,24 +3,34 @@ const Project = require('../models/Project');
 // Get all projects
 const getAllProjects = async (req, res) => {
   try {
-    const { category, limit } = req.query;
+    const { category, limit = 20, page = 1 } = req.query;
     const filter = { isActive: true };
     
     if (category && typeof category === 'string' && ['residential', 'commercial'].includes(category.toLowerCase())) {
       filter.category = category.toLowerCase();
     }
 
-    const query = Project.find(filter).sort({ order: 1, createdAt: -1 });
-    const parsedLimit = parseInt(limit, 10);
-    if (!Number.isNaN(parsedLimit) && parsedLimit > 0) {
-      query.limit(parsedLimit);
-    }
+    const parsedLimit = parseInt(limit, 10) || 20;
+    const parsedPage = parseInt(page, 10) || 1;
+    const skip = (parsedPage - 1) * parsedLimit;
 
-    const projects = await query;
+    const totalRecords = await Project.countDocuments(filter);
+    const totalPages = Math.ceil(totalRecords / parsedLimit);
+
+    const projects = await Project.find(filter)
+      .sort({ order: 1, createdAt: -1 })
+      .limit(parsedLimit)
+      .skip(skip);
+
     res.json({
       success: true,
       data: projects,
-      count: projects.length
+      pagination: {
+        currentPage: parsedPage,
+        totalPages,
+        totalRecords,
+        limit: parsedLimit
+      }
     });
   } catch (error) {
     res.status(500).json({

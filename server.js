@@ -10,12 +10,27 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'http://93.127.194.6',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3001'
+];
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS origin denied: ${origin}`));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -74,6 +89,12 @@ app.use('/api/estimate', estimateRoutes);
 const socialRoutes = require('./routes/social');
 app.use('/api/social', socialRoutes);
 
+const socialIconsRoutes = require('./routes/socialIcons');
+app.use('/api/social-icons', socialIconsRoutes);
+
+const founderRoutes = require('./routes/founder');
+app.use('/api/founder', founderRoutes);
+
 // Serve uploaded files statically
 app.use('/uploads', express.static('uploads'));
 
@@ -84,7 +105,7 @@ app.listen(PORT, () => {
   console.log(`👥 Users API: http://localhost:${PORT}/api/users`);
   console.log(`👥 Team API: http://localhost:${PORT}/api/team`);
   console.log(`🏗️  Projects API: http://localhost:${PORT}/api/projects`);
-  console.log(`📣 Social API: http://localhost:${PORT}/api/social`);
-  console.log(`📤 Upload API: http://localhost:${PORT}/api/upload (CLOUDINARY)`);
+  console.log(`📣 Social API: http://localhost:${PORT}/api/social`);  console.log(`🔗 Social Icons API: http://localhost:${PORT}/api/social-icons`);  console.log(`� Founder API: http://localhost:${PORT}/api/founder`);
+  console.log(`�📤 Upload API: http://localhost:${PORT}/api/upload (CLOUDINARY)`);
   console.log(`📁 Uploads served at: http://localhost:${PORT}/uploads/`);
 });
