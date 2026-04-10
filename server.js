@@ -9,6 +9,10 @@ const cors = require('cors');
 
 const app = express();
 
+// Compression middleware - reduces response size
+const compression = require('compression');
+app.use(compression());
+
 // Middleware
 const allowedOrigins = [
   'http://93.127.194.6',
@@ -19,13 +23,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS origin denied: ${origin}`));
-    }
-  },
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://rkinteriorstudio.in', 'https://www.rkinteriorstudio.in'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true
