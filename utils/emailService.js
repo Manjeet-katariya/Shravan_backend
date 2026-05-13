@@ -267,8 +267,8 @@ const sendThankYouEmail = async (toEmail, name, type = 'contact') => {
             
             <p style="color: #555; font-size: 16px; line-height: 1.8;">
               For urgent queries, you can reach us directly at:<br>
-              <strong style="color: #a68a6b;">Phone: +91 98765 43210</strong><br>
-              <strong style="color: #a68a6b;">Email: info@architecturestudio.com</strong>
+              <strong style="color: #a68a6b;">Phone: +91 8619633247</strong><br>
+              <strong style="color: #a68a6b;">Email: sparchitects93@gmail.com</strong>
             </p>
             
             <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #ddd;">
