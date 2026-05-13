@@ -23,7 +23,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://rkinteriorstudio.in', 'https://www.rkinteriorstudio.in'],
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://www.shravanpuriarchitects.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true
@@ -96,7 +96,7 @@ app.use('/api/founder', founderRoutes);
 // Serve uploaded files statically
 app.use('/uploads', express.static('uploads'));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5003;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📍 API URL: http://localhost:${PORT}`);
